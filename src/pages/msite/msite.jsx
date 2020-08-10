@@ -8,8 +8,8 @@ import Loader from '@/components/loader/loader'
 import ShopList from '@/components/shop_list/shop_list'
 import API from "../../api/api";
 import { is, fromJS } from 'immutable';  // 保证数据的不可变
-import Swiper from "swiper/dist/js/swiper.js";
-import "swiper/dist/css/swiper.css";
+import Swiper from "swiper/cjs/react/swiper.js";
+import "swiper/swiper-bundle.css";
 import {saveAttrInfo} from '@/store/action'
 import PropTypes from 'prop-types'
 
