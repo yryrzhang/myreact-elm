@@ -86,6 +86,7 @@ class Profile extends Component {
   }
   render () {
     return (
+      <div>
       <div className='profile-container'>
       <QueueAnim type='bottom'>
         <Header title="我的" goBack={this.goBack}  key='s1'/>
@@ -160,9 +161,11 @@ class Profile extends Component {
         </QueueAnim>
           </section>
         </section>
-        <Footer key='s3'/>
+
         </QueueAnim>
       {this.state.hasAlert&&<AlertTip logout={()=> {return false}}  closeTip={this.handleClick} alertText={this.state.alertText}/>}
+      </div>
+        <Footer/>
       </div>
     )
   }

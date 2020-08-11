@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import "./search.scss";
 import Header from "@/components/header/header";
+import Footer from '@/components/footer/footer'
 import PropTypes from "prop-types";
 import { is, fromJS  } from 'immutable';  // 保证数据的不可变
 import {imgUrl} from "@/config/envconfig";
@@ -19,6 +20,8 @@ class Search extends Component {
         vertifies: '',
         searchInput: '',
         searchbutton: '',
+        restaurantList:[],
+        show:false,
     };
     handleSearch = () =>{
         console.log("handleSearch")
@@ -47,6 +50,26 @@ class Search extends Component {
             ...newState
         })
     }
+
+    // 校验
+    messageVali = (value) => {
+        this.setState({
+            verify: value?false:true
+        })
+        this.bindThing()
+    }
+
+    bindThing = () => {
+        if (this.state.message && this.state.mesthree && !this.verifyfour) {
+            this.setState({
+                butopacity: 'butopacity'
+            })
+        } else {
+            this.setState({
+                butopacity: ''
+            })
+        }
+    }
     render() {
         return (
             <div className='search_page'>
@@ -64,7 +87,61 @@ class Search extends Component {
                         <button className='search_submit' onClick={this.handleSearch}>搜索</button>
                     </section>
                 </form>
+                {this.state.show&& <section>
+                    <h4 className="title_restaurant">商家</h4>
+                    <ul className="list_container">
+                        {
+                            this.state.restaurantList.map((item,index) =>{
+                                return(
+                                    <Link to={'/shop'+item.id} className='shop_item' key={'1'+index}>
+                                        <img src={imgUrl + item.image_path } alt={""}/>
+                                        <div className='shop-content'>
+                                            <div className='shop-content-title'>
+                                                <div className='title-left'>
+                                                    <span>品牌</span>
+                                                    <span>{item.name}</span>
+                                                </div>
+                                                <div className='title-right'>保准票</div>
+                                            </div>
+                                            <div className='shop-content-title'>
+                                                <div className='title-left'>
+                                                    <div className='star-num'>
+                                                        {this.starCount(item.rating)}
+                                                    </div>
+                                                    <div className='star-rating'>
+                                                        {item.rating}
+                                                    </div>
+                                                    <div className='order-num'>
+                                                        月售{item.recent_order_num}单
+                                                    </div>
+                                                </div>
+                                                <div className='title-right order-badge'>
+                                                    <span>蜂鸟专送</span>
+                                                    <span>准时达</span>
+                                                </div>
+                                            </div>
+                                            <div className='shop-content-title'>
+                                                <div className='fee-left'>
+                                                    <span className='fee-text'>¥{item.float_minimum_order_amount}起送</span>
+                                                    <span className='segmentation'>/</span>
+                                                    <span className='fee-text'>{item.piecewise_agent_fee.tips}</span>
+                                                </div>
+                                                <div className='fee-right'>
+                                                    <span>{item.distance}</span>
+                                                    <span>/</span>
+                                                    <span>{item.order_lead_time}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Link>
+                            )
+                        })
+                        }
+
+                    </ul>
+                </section>}
             </div>
+                <Footer/>
             </div>
         )}
 
