@@ -1,0 +1,38 @@
+@import '../../style/mixin.scss';
+@import '../../assets/iconfont/iconfont.css';
+
+.search-container {
+  margin-top: 2rem;
+  .search_form {
+    background-color: #fff;
+    padding: 0.5rem;
+    display: flex;
+    input {
+      height: 1.5rem;
+    }
+    .search_input {
+      flex: 4;
+      border: 0.025rem solid $bc;
+      @include font(0.8rem, #333);
+      border-radius: 0.125rem;
+      background-color: #f2f2f2;
+      font-weight: bold;
+      padding: 0 0.25rem;
+    }
+    .search_submit {
+      flex: 1;
+      border: 0.025rem solid $blue;
+      margin-left: .2rem;
+      @include font(0.8rem, #fff);
+      border-radius: 0.125rem;
+      background-color: $blue;
+      font-weight: bold;
+      padding: 0 0.25rem;
+    }
+  }
+}
+.site-loader{
+  @include positionCenter(fixed);
+  z-index: 101;
+}
+

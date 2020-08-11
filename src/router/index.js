@@ -8,6 +8,7 @@ const setUser = asyncComponent(() => import("@/pages/set_user/set_user"))
 const msite = asyncComponent(() => import("@/pages/msite/msite"))
 const shop = asyncComponent(() => import("@/pages/shop/shop"))
 const food = asyncComponent(() => import("@/pages/food/food"))
+const search = asyncComponent(() => import("@/pages/search/search"))
 const technology = asyncComponent(() => import("@/pages/technology/technology"))
 
 export default class RouteConfig extends Component {
@@ -20,6 +21,7 @@ export default class RouteConfig extends Component {
           <Route path="/info"  component= {info}/>
           <Route path="/msite" component= {msite}/>
           <Route path="/setuser"  component= {setUser}/>
+          <Route path="/search"  component= {search}/>
           <Route path="/shop/:id"  component= {shop}/>
           <Route path="/food/:geohash/:id/:title"  component= {food}/>
           <Route path="/technology"  component= {technology}/>
