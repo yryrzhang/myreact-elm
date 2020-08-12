@@ -328,7 +328,7 @@ class Shop extends Component {
                   </div>
                   <div onClick={this.handleClick.bind(this, 'unfinished')} className={this.state.miniMoney>0?"gotopay":'gotopay gotopay-active'}>
                   {this.state.miniMoney>0?<div className='gotopay-button-style'>还差¥{this.state.miniMoney}起送</div>
-                      :<div  className='gotopay-button-style'>去结算</div>}
+                      :<Link to={ '/confirmOrder/'+ this.state.shopId}  className='gotopay-button-style'>去结算</Link>}
                   </div>
                 </div>
                 <ReactCSSTransitionGroup

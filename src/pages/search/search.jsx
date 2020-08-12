@@ -5,70 +5,74 @@ import "./search.scss";
 import Header from "@/components/header/header";
 import Footer from '@/components/footer/footer'
 import PropTypes from "prop-types";
+import {saveAttrInfo} from '@/store/action'
 import { is, fromJS  } from 'immutable';  // 保证数据的不可变
-import {imgUrl} from "@/config/envconfig";
+import {imgUrl} from '../../config/envconfig'
 import QueueAnim from 'rc-queue-anim'
 import {getImgPath} from '@/utils/commons'
+import API from "../../api/api";
 
 class Search extends Component {
     static propTypes = {
-        userInfo: PropTypes.object.isRequired,
-        geohash: PropTypes.array.isRequired
+        saveAttrInfo: PropTypes.func.isRequired,
     };
     state = {
+        geohash: [],
         title:'搜索',
         vertifies: '',
         searchInput: '',
         searchbutton: '',
         restaurantList:[],
-        show:false,
+        isShowRestaurant:false,
+        restaurant_name:''
     };
+
+    cityGuess = async () => {
+        let res = await API.cityGuess();
+        this.setState({
+            geohash: [res.latitude, res.longitude]
+        });
+        this.props.saveAttrInfo('geohash', [res.latitude, res.longitude])
+    }
+
+    componentDidMount () {
+        this.cityGuess()
+    }
+    searchRestaurant = async (props) => {
+        let obj = {
+            "extras[]": "restaurant_activity",
+            geohash: this.state.geohash,
+            keyword: this.state.restaurant_name,
+            type: "search"
+        }
+        const restaurantList = await API.searchRestaurant(obj);
+        console.log(restaurantList)
+        this.setState({
+            restaurantList: restaurantList
+        })
+    }
+
     handleSearch = () =>{
+        this.setState({
+            isShowRestaurant: !this.state.isShowRestaurant,
+        })
+        this.searchRestaurant(this.state)
         console.log("handleSearch")
     };
-    handleInput = (type, e) =>{
+
+    handleInput = (type, event) => {
+        let value = event.target.value
         let newState = {}
-        let value = e.target.value
         newState[type] = value
-        switch (type) {
-            case 'searchInput':
-                this.messageVali(value)
-                break
-            case 'mesthree':
-                this.mesthreeVali(value)
-                break
-            case 'telenum':
-                this.teleVali(value)
-                break
-            case 'standbytelenum':
-                this.standbyVali(value)
-                break
-            default:
-                break
+        switch (type){
         }
-        this.setState({
-            ...newState
-        })
+        this.setState(newState)
     }
 
-    // 校验
-    messageVali = (value) => {
-        this.setState({
-            verify: value?false:true
-        })
-        this.bindThing()
-    }
 
-    bindThing = () => {
-        if (this.state.message && this.state.mesthree && !this.verifyfour) {
-            this.setState({
-                butopacity: 'butopacity'
-            })
-        } else {
-            this.setState({
-                butopacity: ''
-            })
-        }
+    shouldComponentUpdate(nextProps, nextState) {   // 判断是否要更新render, return true 更新  return false不更新
+        let refresh = !is(fromJS(this.props), fromJS(nextProps)) || !is(fromJS(this.state),fromJS(nextState))
+        return refresh
     }
     render() {
         return (
@@ -79,7 +83,7 @@ class Search extends Component {
                     <section className='searchbox'>
                         <QueueAnim >
                             <div>
-                                <input type="text" placeholder="请输入商家或美食名称" className='search_input' value={this.state.searchInput} onChange={this.handleInput.bind(this, 'searchInput')}/>
+                                <input type="text" placeholder="请输入商家或美食名称" className='search_input' value={this.state.restaurant_name} onChange={this.handleInput.bind(this,'restaurant_name')}/>
                             </div>
                         </QueueAnim>
                     </section>
@@ -87,68 +91,52 @@ class Search extends Component {
                         <button className='search_submit' onClick={this.handleSearch}>搜索</button>
                     </section>
                 </form>
-                {this.state.show&& <section>
+            </div>
+                {this.state.isShowRestaurant&& <section>
                     <h4 className="title_restaurant">商家</h4>
+                </section>}
                     <ul className="list_container">
                         {
                             this.state.restaurantList.map((item,index) =>{
                                 return(
-                                    <Link to={'/shop'+item.id} className='shop_item' key={'1'+index}>
-                                        <img src={imgUrl + item.image_path } alt={""}/>
-                                        <div className='shop-content'>
-                                            <div className='shop-content-title'>
-                                                <div className='title-left'>
-                                                    <span>品牌</span>
-                                                    <span>{item.name}</span>
-                                                </div>
-                                                <div className='title-right'>保准票</div>
+                                    <Link to={'/shop/'+item.id}  key={'1'+index} className="list_li">
+                                        <section className="item_left">
+                                            <img src={ imgUrl + item.image_path } alt={""} className="restaurant_img"/>
+                                        </section>
+                                        <section className="item_right">
+                                            <div className="item_right_text">
+                                            <p>
+                                            <span>{item.name}</span>
+                                            {/*<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="24" height="14"*/}
+                                                 {/*className="pay_icon">*/}
+                                                {/*<polygon points="0,14 4,0 24,0 20,14"*/}
+                                                         {/*style="fill:none;stroke:#FF6000;stroke-width:1"/>*/}
+                                                {/*<line x1="1.5" y1="12" x2="20" y2="12"*/}
+                                                      {/*style="stroke:#FF6000;stroke-width:1.5"/>*/}
+                                                {/*<text x="3.5" y="9"*/}
+                                                      {/*style="fill:#FF6000;font-size:9;font-weight:bold;">支付*/}
+                                                {/*</text>*/}
+                                            {/*</svg>*/}
+                                            </p>
+                                             <p>月售 {item.month_sales||item.recent_order_num} 单</p>
+                                             <p>¥{item.float_minimum_order_amount}起送 / 距离{item.distance}</p>
                                             </div>
-                                            <div className='shop-content-title'>
-                                                <div className='title-left'>
-                                                    <div className='star-num'>
-                                                        {this.starCount(item.rating)}
-                                                    </div>
-                                                    <div className='star-rating'>
-                                                        {item.rating}
-                                                    </div>
-                                                    <div className='order-num'>
-                                                        月售{item.recent_order_num}单
-                                                    </div>
-                                                </div>
-                                                <div className='title-right order-badge'>
-                                                    <span>蜂鸟专送</span>
-                                                    <span>准时达</span>
-                                                </div>
-                                            </div>
-                                            <div className='shop-content-title'>
-                                                <div className='fee-left'>
-                                                    <span className='fee-text'>¥{item.float_minimum_order_amount}起送</span>
-                                                    <span className='segmentation'>/</span>
-                                                    <span className='fee-text'>{item.piecewise_agent_fee.tips}</span>
-                                                </div>
-                                                <div className='fee-right'>
-                                                    <span>{item.distance}</span>
-                                                    <span>/</span>
-                                                    <span>{item.order_lead_time}</span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        </section>
                                     </Link>
                             )
                         })
                         }
-
                     </ul>
-                </section>}
-            </div>
+
+
                 <Footer/>
             </div>
         )}
 
 }
-const mapStateToProps = (state) => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        userInfo: state.userInfo
+        saveAttrInfo: (attr, geohash) => dispatch(saveAttrInfo(attr, geohash))
     }
 }
-export default connect(mapStateToProps)(Search)
+export default connect(()=>({}), mapDispatchToProps)(Search)

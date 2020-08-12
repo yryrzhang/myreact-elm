@@ -279,6 +279,27 @@ class API extends Server{
     }
   }
 
+    /**
+     * 获取search页面搜索结果
+     */
+    async searchRestaurant(data){
+        try{
+            let result = await this.axios('get', '/v4/restaurants/' + getUrlConcat(data));
+            if(result){
+                return result;
+            }else{
+                let err = {
+                    tip: '获取商店详情失败',
+                    response: result,
+                    url: '//elm.cangdu.org/v1/carts/addresses',
+                }
+                throw err;
+            }
+        }catch(err){
+            throw err;
+        }
+    }
+
 }
 
 export default new API()
