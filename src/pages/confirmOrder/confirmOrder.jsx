@@ -23,7 +23,38 @@ class ConfirmOrder extends Component {
 
     render() {
         return(
-            <div className="confirmOrderCotainer">ConfirmOrder</div>
+            <div className="confirmOrderContainer">
+                <section>
+                    <Header title="确认订单" signUp={true} goHome={this.goHome}/>
+                    <Link to={'/confirmOrder/chooseAddress'}  className="address_container">
+                        <div className="address_empty_left">
+                            <svg className="location_icon" xmlns="http://www.w3.org/1999/xlink">
+
+                            </svg>
+                            <div className="add_address">
+                                请添加一个收货地址
+                            </div>
+                            <div className="address_detail_container">
+                                <header>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </header>
+                                <div className="address_detail">
+                                    <span></span>
+                                    <p></p>
+                                </div>
+                            </div>
+                            <svg className="address_empty_right">
+                                {/*<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>*/}
+                            </svg>
+                        </div>
+                    </Link>
+                    <div className="confirmOrderCotainer">ConfirmOrder</div>
+                </section>
+
+            </div>
+
         )
     }
 }
